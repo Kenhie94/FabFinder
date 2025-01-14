@@ -4,7 +4,7 @@ import Link from "next/link"
 
 export default function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navBackground navbar navbar-expand-lg">
       <div className="container-fluid">
         <Link className="navbar-brand" href="/home">
           FabFinder
