@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { getUsers } from "../_actions/userActions";
 
-export default function LandingPage() {
+export default async function LandingPage() {
   const [isRegistering, setIsRegistering] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function LandingPage() {
     return () => {
       document.body.classList.remove("login-background");
     };
-  }, [location]);
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,6 +36,8 @@ export default function LandingPage() {
     }
   };
 
+  const res = await getUsers();
+
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 pt-5">
       <div className="backgroundImg card p-4" style={{ width: "400px" }}>
@@ -42,21 +45,15 @@ export default function LandingPage() {
         <form onSubmit={handleSubmit}>
           {/* Shared Email Field */}
           <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Email address
-            </label>
-            <input type="email" className="form-control" id="email" placeholder="Enter your email" required />
-          </div>
+                <label htmlFor="name" className="form-label">
+                  Username
+                </label>
+                <input type="text" className="form-control" id="name" placeholder="Enter your username" required />
+              </div>
 
           {/* Additional Fields for Registration */}
           {isRegistering && (
             <>
-              <div className="mb-3">
-                <label htmlFor="name" className="form-label">
-                  Full Name
-                </label>
-                <input type="text" className="form-control" id="name" placeholder="Enter your full name" required />
-              </div>
               <div className="mb-3">
                 <label htmlFor="confirmPassword" className="form-label">
                   Confirm Password
