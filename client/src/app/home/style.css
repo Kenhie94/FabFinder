@@ -8,6 +8,11 @@
   margin-bottom: 30px;
 }
 
+.logoStyle {
+  max-width: 275px;
+  max-height: 275px;
+}
+
 .input-style {
   width: 500px;
 }

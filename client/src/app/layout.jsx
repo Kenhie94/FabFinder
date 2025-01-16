@@ -12,6 +12,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="d-flex flex-column min-vh-100">
+      <link href="https://fonts.cdnfonts.com/css/fleshandblood" rel="stylesheet"></link>
         {/* Conditionally render Navbar */}
         {pathname !== "/" && <Navbar />}
         <div className="flex-grow-1">{children}</div>

@@ -39,23 +39,23 @@ export default function Homepage() {
     }
   };
 
-  // Automatically clear error after 5 seconds
+  // Automatically clear error after 1 second
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
         setError(null);
-      }, 1000); // Clear error after 1 seconds
+      }, 10000); // Clear error after 1 second
 
       return () => clearTimeout(timer); // Cleanup timer on component unmount
     }
   }, [error]);
 
-  // Automatically clear "no results" message after 5 seconds
+  // Automatically clear "no results" message after 2.5 seconds
   useEffect(() => {
     if (noResultsMessage) {
       const timer = setTimeout(() => {
         setNoResultsMessage(false);
-      }, 2500); // Clear no-results message after 2.5 seconds
+      }, 10000); // Clear no-results message after 2.5 seconds
 
       return () => clearTimeout(timer); // Cleanup timer on component unmount
     }
@@ -64,9 +64,10 @@ export default function Homepage() {
   return (
     <div className="homepage">
       <div className="header-section text-center">
-        <h1>Welcome to FabFinder</h1>
+        {/* Conditionally render the logo */}
+        {!searchConducted && <img className="logoStyle" src="/FabFinder-Logo.png" alt="FabFinder Logo" />}
         <form onSubmit={handleSearch} className="d-flex justify-content-center mt-3">
-          <div className="form-groug">
+          <div className="form-group">
             <input
               type="text"
               className="input-style form-control"
@@ -83,7 +84,7 @@ export default function Homepage() {
         </form>
         {/* Only display "no results" after a search has been conducted */}
         {searchConducted && noResultsMessage && !error && (
-          <p className="mt-3">No results found for "{searchTerm}".</p>
+          <p className="mt-3">😕 No cards found.</p>
         )}
       </div>
       <div className="cards-section mt-5">

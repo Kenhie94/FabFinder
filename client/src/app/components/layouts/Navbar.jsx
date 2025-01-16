@@ -1,14 +1,16 @@
 "use client";
 
-import Link from "next/link"
+import Link from "next/link";
 
 export default function Navbar() {
   return (
     <nav className="navBackground navbar navbar-expand-lg">
       <div className="container-fluid">
-        <Link className="navbar-brand ms-5 fs-2 fw-medium" href="/home">
-          FabFinder
-        </Link>
+        <div>
+          <Link className="navbarLogoStyle navbar-brand ms-5 fs-1 fw-1" href="/home">
+            FabFinder
+          </Link>
+        </div>
         <div className="collapse navbar-collapse">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 me-5 fs-4 fw-bold">
             <li className="nav-item">
@@ -23,7 +25,7 @@ export default function Navbar() {
             </li>
             <li>
               <Link className="nav-link" href="/">
-              Log out
+                Log out
               </Link>
             </li>
           </ul>
