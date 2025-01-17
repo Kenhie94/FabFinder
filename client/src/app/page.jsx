@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { getUsers } from "../_actions/userActions";
 
-export default async function LandingPage() {
+export default function LandingPage() {
   const [isRegistering, setIsRegistering] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -35,8 +34,6 @@ export default async function LandingPage() {
       router.push("/home")
     }
   };
-
-  const res = await getUsers();
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 pt-5">

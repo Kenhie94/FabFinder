@@ -11,6 +11,6 @@ const userSchema = new Schema({
   }
 }, { timestamps: true})
 
-const UserModel = models.user || model('post', userSchema)
+const UserModel = models.user || model('user', userSchema)
 
 export default UserModel;

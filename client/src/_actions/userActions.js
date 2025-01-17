@@ -1,6 +1,6 @@
 'use server'
 
-// import UserModel from "@/models/userModel"
+import UserModel from "../models/userModel"
 import connectDB from "../config/database"
 
 export async function getUsers() {
