@@ -1,16 +1,21 @@
-import { Schema, model, models } from 'mongoose';
+import { Schema, model, models } from "mongoose";
 
-const userSchema = new Schema({
-  username: {
-    type: String,
-    required: true
+const userSchema = new Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true
-  }
-}, { timestamps: true})
+  { timestamps: true }
+);
 
-const UserModel = models.user || model('post', userSchema)
+// Check if the model exists in the `models` object, otherwise create it
+const UserModel = models.users || model("users", userSchema);
 
 export default UserModel;
