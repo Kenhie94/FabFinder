@@ -5,6 +5,8 @@ import { usePathname, useRouter } from "next/navigation";
 
 export default function LandingPage() {
   const [isRegistering, setIsRegistering] = useState(false);
+  const [formData, setFormData] = useState({ username: "", email: "", password: "", confirmPassword: "" });
+  const [message, setMessage] = useState("");
   const pathname = usePathname();
   const router = useRouter();
 
@@ -20,18 +22,42 @@ export default function LandingPage() {
     return () => {
       document.body.classList.remove("login-background");
     };
-  });
+  }, [pathname]);
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (isRegistering) {
-      console.log("Register form submitted");
-      alert("Registration successful! Please log in.");
-      setIsRegistering(false);
-    } else {
-      console.log("Login form submitted");
-      router.push("/home")
+    if (isRegistering && formData.password !== formData.confirmPassword) {
+      setMessage("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const url = isRegistering ? "/api/register" : "/api/login";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setMessage(isRegistering ? "Registration successful! Please log in." : "Login successful!");
+        if (!isRegistering) {
+          router.push("/home"); // Redirect to home page on successful login
+        } else {
+          setIsRegistering(false); // Switch to login mode after registration
+        }
+      } else {
+        setMessage(result.error || "An error occurred.");
+      }
+    } catch (error) {
+      setMessage("An unexpected error occurred.");
     }
   };
 
@@ -40,33 +66,53 @@ export default function LandingPage() {
       <div className="backgroundImg card p-4" style={{ width: "400px" }}>
         <h2 className="text-center mb-4">{isRegistering ? "Register" : "Login"}</h2>
         <form onSubmit={handleSubmit}>
-          {/* Shared Email Field */}
           <div className="mb-3">
-                <label htmlFor="name" className="form-label">
-                  Username
-                </label>
-                <input type="text" className="form-control" id="name" placeholder="Enter your username" required />
-              </div>
-
-          {/* Additional Fields for Registration */}
-          {isRegistering && (
-            <>
-              <div className="mb-3">
-                <label htmlFor="confirmPassword" className="form-label">
-                  Confirm Password
-                </label>
-                <input type="password" className="form-control" id="confirmPassword" placeholder="Confirm your password" required />
-              </div>
-            </>
-          )}
-
-          {/* Shared Password Field */}
+              <label htmlFor="username" className="form-label">
+                Username
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="username"
+                name="username"
+                placeholder="Enter your username"
+                value={formData.username}
+                onChange={handleChange}
+                required
+              />
+            </div>
           <div className="mb-3">
             <label htmlFor="password" className="form-label">
               Password
             </label>
-            <input type="password" className="form-control" id="password" placeholder="Enter your password" required />
+            <input
+              type="password"
+              className="form-control"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
           </div>
+          {isRegistering && (
+            <div className="mb-3">
+              <label htmlFor="confirmPassword" className="form-label">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                className="form-control"
+                id="confirmPassword"
+                name="confirmPassword"
+                placeholder="Confirm your password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          )}
 
           {/* Submit Button */}
           <button type="submit" className="btn btn-primary w-100">
@@ -83,6 +129,7 @@ export default function LandingPage() {
             </button>
           </small>
         </div>
+        {message && <p className="text-center mt-3">{message}</p>}
       </div>
     </div>
   );
