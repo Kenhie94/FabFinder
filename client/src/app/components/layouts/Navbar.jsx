@@ -18,11 +18,6 @@ export default function Navbar() {
                 About
               </Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" href="/developer">
-                Developer
-              </Link>
-            </li>
             <li>
               <Link className="nav-link" href="/">
                 Log out

@@ -9,6 +9,15 @@ export default function Homepage() {
   const [error, setError] = useState(null); // Handle errors
   const [searchConducted, setSearchConducted] = useState(false); // Track if a search was performed
   const [noResultsMessage, setNoResultsMessage] = useState(false); // Track if "no results" should show
+  const [selectedCard, setSelectedCard] = useState(null);
+
+  const handleCardClick = (card) => {
+    setSelectedCard(card);
+  };
+
+  const closeModal = () => {
+    setSelectedCard(null)
+  };
 
   const handleSearch = async (e) => {
     e.preventDefault(); // Prevent page reload
@@ -83,18 +92,53 @@ export default function Homepage() {
           </button>
         </form>
         {/* Only display "no results" after a search has been conducted */}
-        {searchConducted && noResultsMessage && !error && (
-          <p className="mt-3">😕 No cards found.</p>
-        )}
+        {searchConducted && noResultsMessage && !error && <p className="mt-3">😕 No cards found.</p>}
       </div>
       <div className="cards-section mt-5">
-        <ul className="cards-container d-flex flex-wrap justify-content-center p-0">
-          {searchResults.map((card) => (
-            <li className="card-item" key={card.unique_id}>
+        {/* Cards List */}
+      <ul className="cards-container d-flex flex-wrap justify-content-center p-0">
+        {searchResults.map((card) => (
+          <li
+            className="card-item"
+            key={card.unique_id}
+            onClick={() => handleCardClick(card)} // Handle click
+            style={{ cursor: "pointer" }}
+          >
+            {card.printings.length >= 3 ? (
+              <img
+                src={card.printings[card.printings.length - 3].image_url}
+                alt={card.name}
+              />
+            ) : (
               <img src={card.printings[0].image_url} alt={card.name} />
-            </li>
-          ))}
-        </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      {/* Modal */}
+      {selectedCard && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            {selectedCard.printings.length >= 3 ? (
+              <img
+                src={selectedCard.printings[selectedCard.printings.length - 3].image_url}
+                alt={selectedCard.name}
+                style={{ width: "100%", height: "auto" }}
+              />
+            ) : (
+              <img
+                src={selectedCard.printings[0].image_url}
+                alt={selectedCard.name}
+                style={{ width: "100%", height: "auto" }}
+              />
+            )}
+            <button className="close-button" onClick={closeModal}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );
