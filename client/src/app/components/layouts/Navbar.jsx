@@ -1,8 +1,16 @@
 "use client";
 
+import React from 'react';
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+  }
+
   return (
     <nav className="navBackground navbar navbar-expand-lg">
       <div className="container-fluid">
@@ -19,7 +27,7 @@ export default function Navbar() {
               </Link>
             </li>
             <li>
-              <Link className="nav-link" href="/">
+              <Link className="nav-link" onClick={handleLogout} href={"/"}>
                 Log out
               </Link>
             </li>
