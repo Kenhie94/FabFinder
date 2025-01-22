@@ -1,12 +1,18 @@
-"use client"; // React hook requirement
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function LandingPage() {
   const [isRegistering, setIsRegistering] = useState(false);
-  const [formData, setFormData] = useState({ username: "", email: "", password: "", confirmPassword: "" });
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -30,9 +36,12 @@ export default function LandingPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage("");
 
     if (isRegistering && formData.password !== formData.confirmPassword) {
       setMessage("Passwords do not match.");
+      setLoading(false);
       return;
     }
 
@@ -47,17 +56,22 @@ export default function LandingPage() {
       const result = await response.json();
 
       if (response.ok) {
-        setMessage(isRegistering ? "Registration successful! Please log in." : "Login successful!");
-        if (!isRegistering) {
-          router.push("/home"); // Redirect to home page on successful login
+        if (isRegistering) {
+          setMessage("Registration successful! Please log in.");
+          setIsRegistering(false); // Switch to login mode after successful registration
         } else {
-          setIsRegistering(false); // Switch to login mode after registration
+          // Store the token in localStorage
+          localStorage.setItem("token", result.token);
+          setMessage("Login successful!");
+          router.push("/home"); // Redirect to home page on successful login
         }
       } else {
         setMessage(result.error || "An error occurred.");
       }
     } catch (error) {
       setMessage("An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,20 +81,20 @@ export default function LandingPage() {
         <h2 className="text-center mb-4">{isRegistering ? "Register" : "Login"}</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-              <label htmlFor="username" className="form-label">
-                Username
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="username"
-                name="username"
-                placeholder="Enter your username"
-                value={formData.username}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <label htmlFor="username" className="form-label">
+              Username
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="username"
+              name="username"
+              placeholder="Enter your username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+            />
+          </div>
           <div className="mb-3">
             <label htmlFor="password" className="form-label">
               Password
@@ -114,17 +128,22 @@ export default function LandingPage() {
             </div>
           )}
 
-          {/* Submit Button */}
-          <button type="submit" className="btn btn-primary w-100">
-            {isRegistering ? "Register" : "Login"}
+          <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+            {loading ? "Processing..." : isRegistering ? "Register" : "Login"}
           </button>
         </form>
 
-        {/* Toggle Between Login/Register */}
         <div className="text-center mt-3">
           <small>
             {isRegistering ? "Already have an account?" : "Don't have an account?"}{" "}
-            <button type="button" className="btn btn-link p-0" onClick={() => setIsRegistering(!isRegistering)}>
+            <button
+              type="button"
+              className="btn btn-link p-0"
+              onClick={() => {
+                setIsRegistering(!isRegistering);
+                setMessage("");
+              }}
+            >
               {isRegistering ? "Log in" : "Sign up"}
             </button>
           </small>
