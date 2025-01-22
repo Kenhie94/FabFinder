@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import "./style.css";
 
 export default function Homepage() {
@@ -9,14 +10,16 @@ export default function Homepage() {
   const [error, setError] = useState(null); // Handle errors
   const [searchConducted, setSearchConducted] = useState(false); // Track if a search was performed
   const [noResultsMessage, setNoResultsMessage] = useState(false); // Track if "no results" should show
-  const [selectedCard, setSelectedCard] = useState(null);
+  const [selectedCard, setSelectedCard] = useState(null); // Track the selected card
+
+  const router = useRouter();
 
   const handleCardClick = (card) => {
     setSelectedCard(card);
   };
 
   const closeModal = () => {
-    setSelectedCard(null)
+    setSelectedCard(null);
   };
 
   const handleSearch = async (e) => {
@@ -96,49 +99,34 @@ export default function Homepage() {
       </div>
       <div className="cards-section mt-5">
         {/* Cards List */}
-      <ul className="cards-container d-flex flex-wrap justify-content-center p-0">
-        {searchResults.map((card) => (
-          <li
-            className="card-item"
-            key={card.unique_id}
-            onClick={() => handleCardClick(card)} // Handle click
-            style={{ cursor: "pointer" }}
-          >
-            {card.printings.length >= 3 ? (
-              <img
-                src={card.printings[card.printings.length - 3].image_url}
-                alt={card.name}
-              />
-            ) : (
-              <img src={card.printings[0].image_url} alt={card.name} />
-            )}
-          </li>
-        ))}
-      </ul>
+        <ul className="cards-container d-flex flex-wrap justify-content-center p-0">
+          {searchResults.map((card) => (
+            <li
+              className="card-item"
+              key={card.unique_id}
+              onClick={() => handleCardClick(card)} // Handle click
+              style={{ cursor: "pointer" }}
+            >
+              {card.printings.length >= 3 ? <img src={card.printings[card.printings.length - 3].image_url} alt={card.name} /> : <img src={card.printings[0].image_url} alt={card.name} />}
+            </li>
+          ))}
+        </ul>
 
-      {/* Modal */}
-      {selectedCard && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            {selectedCard.printings.length >= 3 ? (
-              <img
-                src={selectedCard.printings[selectedCard.printings.length - 3].image_url}
-                alt={selectedCard.name}
-                style={{ width: "100%", height: "auto" }}
-              />
-            ) : (
-              <img
-                src={selectedCard.printings[0].image_url}
-                alt={selectedCard.name}
-                style={{ width: "100%", height: "auto" }}
-              />
-            )}
-            <button className="close-button" onClick={closeModal}>
-              Close
-            </button>
+        {/* Modal */}
+        {selectedCard && (
+          <div className="modal-overlay" onClick={closeModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              {selectedCard.printings.length >= 3 ? (
+                <img src={selectedCard.printings[selectedCard.printings.length - 3].image_url} alt={selectedCard.name} style={{ width: "100%", height: "auto" }} />
+              ) : (
+                <img src={selectedCard.printings[0].image_url} alt={selectedCard.name} style={{ width: "100%", height: "auto" }} />
+              )}
+              <button className="close-button" onClick={() => router.push(`/cards/${selectedCard.unique_id}`)}>
+                See card detail
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </div>
   );
