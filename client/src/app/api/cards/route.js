@@ -19,9 +19,10 @@ export async function POST(req) {
     const decoded = jwt.verify(token, JWT_SECRET);
     const userId = decoded.id; //
 
-    const { title, description } = await req.json();
+    const { cardId, title, description } = await req.json();
 
     const newCard = await CardModel.create({
+      cardId,
       title,
       description,
       user: userId,

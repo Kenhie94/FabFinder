@@ -1,6 +1,7 @@
 import { Schema, model, models } from "mongoose";
 
 const cardSchema = new Schema({
+  cardId: String,
   title: String,
   description: String,
   user: {

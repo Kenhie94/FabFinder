@@ -34,7 +34,7 @@ export default function ProfilePage() {
         setAllCards(githubCards);
 
         // Match saved cards with full data using unique_id
-        const matched = githubCards.filter((card) => savedData.some((saved) => card.unique_id === saved.unique_id || card.name === saved.title));
+        const matched = githubCards.filter((card) => savedData.some((saved) => saved.cardId === card.unique_id));
 
         setMatchedCards(matched);
       } catch (err) {

@@ -20,6 +20,7 @@ export default function CardDetail() {
         },
         credentials: "include", // 🔥 This sends the JWT cookie!
         body: JSON.stringify({
+          cardId: card.unique_id,
           title: card.name,
           description: card.types.join(", "),
         }),
