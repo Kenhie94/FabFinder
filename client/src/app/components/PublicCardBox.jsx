@@ -1,4 +1,3 @@
-// components/PublicCardBox.jsx
 "use client";
 
 import { useState } from "react";
@@ -18,18 +17,18 @@ export default function PublicCardBox({ card, onSave }) {
       className="card-item position-relative"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{ cursor: "pointer", maxWidth: "200px", margin: "10px" }}
+      style={{ cursor: "pointer", maxWidth: "300px", margin: "10px" }}
     >
       <img
         src={imageUrl}
         alt={card.name}
-        style={{ width: "100%", borderRadius: "8px" }}
+        style={{ width: "100%", borderRadius: "1px" }}
       />
 
       {hovered && (
-        <div className="hover-buttons d-flex flex-column position-absolute top-50 start-50 translate-middle text-center">
+        <div className="hover-buttons d-flex flex-row position-absolute top-50 start-50 translate-middle text-center">
           <button
-            className="btn btn-success mb-2"
+            className="btn btn-success m-2"
             onClick={(e) => {
               e.stopPropagation();
               onSave(card);
@@ -38,7 +37,7 @@ export default function PublicCardBox({ card, onSave }) {
             Save
           </button>
           <button
-            className="btn btn-warning"
+            className="btn btn-warning m-2"
             onClick={(e) => {
               e.stopPropagation();
               router.push(`/cards/${card.unique_id}`);

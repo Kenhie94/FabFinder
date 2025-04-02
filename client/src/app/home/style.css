@@ -44,7 +44,6 @@
 
 .card-item:hover {
   background-color: gray;
-  transform: scale(1.05);
 }
 
 .modal-overlay {

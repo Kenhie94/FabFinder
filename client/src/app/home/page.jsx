@@ -128,7 +128,7 @@ export default function Homepage() {
       <div className="cards-section mt-5">
         <ul className="cards-container d-flex flex-wrap justify-content-center p-0">
           {searchResults.map((card) => (
-            <CardBox key={card.unique_id} card={card} onClick={handleSave} />
+            <CardBox key={card.unique_id} card={card} onSave={handleSave} />
           ))}
         </ul>
 
