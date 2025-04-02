@@ -52,6 +52,34 @@ export default function Homepage() {
     }
   };
 
+  const handleSave = async (card) => {
+    try {
+      const res = await fetch("/api/cards", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cardId: card.unique_id,
+          title: card.name,
+          description: card.types?.join(", "),
+          image: card.printings[0]?.image_url, // Save main image
+        }),
+      });
+  
+      if (!res.ok) {
+        throw new Error("Failed to save card");
+      }
+  
+      alert(`Card "${card.name}" saved to your collection!`);
+    } catch (err) {
+      console.error(err);
+      alert("Error saving card.");
+    }
+  };
+  
+
   // Automatically clear error after 1 second
   useEffect(() => {
     if (error) {
@@ -100,7 +128,7 @@ export default function Homepage() {
       <div className="cards-section mt-5">
         <ul className="cards-container d-flex flex-wrap justify-content-center p-0">
           {searchResults.map((card) => (
-            <CardBox key={card.unique_id} card={card} onClick={handleCardClick} />
+            <CardBox key={card.unique_id} card={card} onClick={handleSave} />
           ))}
         </ul>
 

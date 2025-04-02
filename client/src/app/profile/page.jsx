@@ -43,7 +43,7 @@ export default function ProfilePage() {
       ) : (
         <ul className="cards-container d-flex flex-wrap justify-content-center p-0">
           {cards.map((card) => (
-            <CardBox key={card._id} card={card} onClick={() => {}} />
+            <CardBox key={card.image} card={card} onClick={() => {}} />
           ))}
         </ul>
       )}

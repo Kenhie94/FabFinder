@@ -44,6 +44,7 @@
 
 .card-item:hover {
   background-color: gray;
+  transform: scale(1.05);
 }
 
 .modal-overlay {
@@ -89,4 +90,10 @@
 
 .close-button:hover {
   background-color: #0056b3;
+}
+
+.hover-buttons {
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 10px;
+  border-radius: 8px;
 }
