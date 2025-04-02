@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import CardBox from "../components/CardBox";
+import CardBox from "../components/PublicCardBox";
 import "./style.css";
 
 export default function Homepage() {
