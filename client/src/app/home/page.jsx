@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import CardBox from "../components/CardBox";
 import "./style.css";
 
 export default function Homepage() {
-  const [searchTerm, setSearchTerm] = useState(""); // Track user input
-  const [searchResults, setSearchResults] = useState([]); // Store search results
-  const [error, setError] = useState(null); // Handle errors
-  const [searchConducted, setSearchConducted] = useState(false); // Track if a search was performed
-  const [noResultsMessage, setNoResultsMessage] = useState(false); // Track if "no results" should show
-  const [selectedCard, setSelectedCard] = useState(null); // Track the selected card
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [error, setError] = useState(null);
+  const [searchConducted, setSearchConducted] = useState(false);
+  const [noResultsMessage, setNoResultsMessage] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
 
   const router = useRouter();
 
@@ -23,11 +24,11 @@ export default function Homepage() {
   };
 
   const handleSearch = async (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
 
     try {
-      setSearchConducted(true); // Set search conducted to true
-      setNoResultsMessage(false); // Reset no-results message
+      setSearchConducted(true);
+      setNoResultsMessage(false);
 
       // Fetch the data
       const response = await fetch("https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json");
@@ -42,10 +43,10 @@ export default function Homepage() {
       setSearchResults(filteredCards);
 
       if (filteredCards.length === 0) {
-        setNoResultsMessage(true); // Show no-results message
+        setNoResultsMessage(true);
       }
 
-      setError(null); // Clear any previous errors
+      setError(null);
     } catch (err) {
       setError(err.message);
     }
@@ -56,9 +57,9 @@ export default function Homepage() {
     if (error) {
       const timer = setTimeout(() => {
         setError(null);
-      }, 10000); // Clear error after 1 second
+      }, 10000);
 
-      return () => clearTimeout(timer); // Cleanup timer on component unmount
+      return () => clearTimeout(timer);
     }
   }, [error]);
 
@@ -67,9 +68,9 @@ export default function Homepage() {
     if (noResultsMessage) {
       const timer = setTimeout(() => {
         setNoResultsMessage(false);
-      }, 10000); // Clear no-results message after 2.5 seconds
+      }, 10000);
 
-      return () => clearTimeout(timer); // Cleanup timer on component unmount
+      return () => clearTimeout(timer);
     }
   }, [noResultsMessage]);
 
@@ -86,29 +87,20 @@ export default function Homepage() {
               name="searchEngine"
               id="searchEngine"
               placeholder="Search for Flesh and Blood cards"
-              value={searchTerm} // Controlled input
-              onChange={(e) => setSearchTerm(e.target.value)} // Update state
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <button type="submit" className="btn btn-danger ms-3 align-self-end">
             Search
           </button>
         </form>
-        {/* Only display "no results" after a search has been conducted */}
         {searchConducted && noResultsMessage && !error && <p className="mt-3">😕 No cards found.</p>}
       </div>
       <div className="cards-section mt-5">
-        {/* Cards List */}
         <ul className="cards-container d-flex flex-wrap justify-content-center p-0">
           {searchResults.map((card) => (
-            <li
-              className="card-item"
-              key={card.unique_id}
-              onClick={() => handleCardClick(card)} // Handle click
-              style={{ cursor: "pointer" }}
-            >
-              {card.printings.length >= 3 ? <img src={card.printings[card.printings.length - 3].image_url} alt={card.name} /> : <img src={card.printings[0].image_url} alt={card.name} />}
-            </li>
+            <CardBox key={card.unique_id} card={card} onClick={handleCardClick} />
           ))}
         </ul>
 
