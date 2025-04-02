@@ -43,7 +43,15 @@ export default function ProfilePage() {
       ) : (
         <ul className="cards-container d-flex flex-wrap justify-content-center p-0">
           {cards.map((card) => (
-            <CardBox key={card.image} card={card} onClick={() => {}} />
+            <CardBox
+              key={card._id}
+              card={card}
+              onClick={() => {}}
+              onDelete={(deletedCardId) => {
+                // Optional: remove deleted card from UI immediately
+                setCards((prev) => prev.filter((c) => c.cardId !== deletedCardId));
+              }}
+            />
           ))}
         </ul>
       )}
