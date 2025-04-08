@@ -1,6 +1,10 @@
 "use client";
 
-export default function CardBox({ card, onClick, onDelete }) {
+import { useRouter } from "next/navigation";
+
+export default function CardBox({ card, onDelete }) {
+  const router = useRouter();
+
   const handleDelete = async () => {
     try {
       const res = await fetch("/api/cards", {
@@ -27,11 +31,18 @@ export default function CardBox({ card, onClick, onDelete }) {
     }
   };
 
+  const handleDetails = () => {
+    router.push(`/cards/${card.cardId}`);
+  };
+
   return (
     <li className="card-item" style={{ maxWidth: "200px", margin: "10px" }}>
       <img src={card.image} alt={card.title} style={{ width: "100%" }} />
       <div className="text-center mt-2">
-        <button className="btn btn-danger btn-sm" onClick={handleDelete}>
+        <button className="btn btn-warning btn-sm mx-2" onClick={handleDetails}>
+          Details
+        </button>
+        <button className="btn btn-danger btn-sm mx-2" onClick={handleDelete}>
           Delete
         </button>
       </div>

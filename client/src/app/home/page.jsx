@@ -12,6 +12,8 @@ export default function Homepage() {
   const [searchConducted, setSearchConducted] = useState(false);
   const [noResultsMessage, setNoResultsMessage] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1); // Track the current page
+  const cardsPerPage = 10; // Number of cards to display per page
 
   const router = useRouter();
 
@@ -41,6 +43,35 @@ export default function Homepage() {
       const filteredCards = data.filter((card) => card.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
       setSearchResults(filteredCards);
+      setCurrentPage(1); // Reset to the first page when a new search is conducted
+
+      if (filteredCards.length === 0) {
+        setNoResultsMessage(true);
+      }
+
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleFilter = async (type) => {
+    try {
+      setSearchConducted(true);
+      setNoResultsMessage(false);
+
+      // Fetch the data
+      const response = await fetch("https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      // Filter cards by type
+      const filteredCards = data.filter((card) => card.types.includes(type));
+
+      setSearchResults(filteredCards);
+      setCurrentPage(1); // Reset to the first page when a new filter is applied
 
       if (filteredCards.length === 0) {
         setNoResultsMessage(true);
@@ -67,18 +98,17 @@ export default function Homepage() {
           image: card.printings[0]?.image_url, // Save main image
         }),
       });
-  
+
       if (!res.ok) {
         throw new Error("Failed to save card");
       }
-  
+
       alert(`Card "${card.name}" saved to your collection!`);
     } catch (err) {
       console.error(err);
       alert("Error saving card.");
     }
   };
-  
 
   // Automatically clear error after 1 second
   useEffect(() => {
@@ -101,6 +131,27 @@ export default function Homepage() {
       return () => clearTimeout(timer);
     }
   }, [noResultsMessage]);
+
+  const filterTerms = ["Assassin", "Brute", "Guardian", "Illusionist", "Mechanologist", "Necromancer", "Ninja", "Pirate", "Ranger", "Runeblade", "Warrior"];
+
+  // Calculate the cards to display based on the current page
+  const indexOfLastCard = currentPage * cardsPerPage;
+  const indexOfFirstCard = indexOfLastCard - cardsPerPage;
+  const currentCards = searchResults.slice(indexOfFirstCard, indexOfLastCard);
+
+  const totalPages = Math.ceil(searchResults.length / cardsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
+  };
 
   return (
     <div className="homepage">
@@ -125,9 +176,34 @@ export default function Homepage() {
         </form>
         {searchConducted && noResultsMessage && !error && <p className="mt-3">😕 No cards found.</p>}
       </div>
+
+      {/* Filter Buttons */}
+      <div className="filter-buttons text-center mt-4">
+        {filterTerms.map((term) => (
+          <button key={term} className="btn btn-outline-primary mx-2" onClick={() => handleFilter(term)}>
+            {term}
+          </button>
+        ))}
+      </div>
+
+      {/* Pagination Controls */}
+      {searchResults.length > cardsPerPage && (
+        <div className="pagination-controls text-center mt-4">
+          <button className="btn btn-secondary mx-2" onClick={handlePreviousPage} disabled={currentPage === 1}>
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button className="btn btn-secondary mx-2" onClick={handleNextPage} disabled={currentPage === totalPages}>
+            Next
+          </button>
+        </div>
+      )}
+
       <div className="cards-section mt-5">
         <ul className="cards-container d-flex flex-wrap justify-content-center p-0">
-          {searchResults.map((card) => (
+          {currentCards.map((card) => (
             <CardBox key={card.unique_id} card={card} onSave={handleSave} />
           ))}
         </ul>
