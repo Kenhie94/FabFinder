@@ -13,7 +13,7 @@ export default function Homepage() {
   const [noResultsMessage, setNoResultsMessage] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
   const [currentPage, setCurrentPage] = useState(1); // Track the current page
-  const cardsPerPage = 10; // Number of cards to display per page
+  const cardsPerPage = 8; // Number of cards to display per page
 
   const router = useRouter();
 
@@ -132,7 +132,25 @@ export default function Homepage() {
     }
   }, [noResultsMessage]);
 
-  const filterTerms = ["Assassin", "Brute", "Guardian", "Illusionist", "Mechanologist", "Necromancer", "Ninja", "Pirate", "Ranger", "Runeblade", "Warrior"];
+  const classTerms = [
+    "Assassin",
+    "Bard",
+    "Brute",
+    "Generic",
+    "Guardian",
+    "Illusionist",
+    "Mechanologist",
+    "Merchant",
+    "Necromancer",
+    "Ninja",
+    "Pirate",
+    "Ranger",
+    "Runeblade",
+    "Shapeshifter",
+    "Warrior",
+    "Wizard",
+  ];
+  const typeTerms = ["Chaos", "Draconic", "Earth", "Elemental", "Ice", "Light", "Lightning", "Royal", "Shadow"];
 
   // Calculate the cards to display based on the current page
   const indexOfLastCard = currentPage * cardsPerPage;
@@ -178,12 +196,22 @@ export default function Homepage() {
       </div>
 
       {/* Filter Buttons */}
-      <div className="filter-buttons text-center mt-4">
-        {filterTerms.map((term) => (
-          <button key={term} className="btn btn-outline-primary mx-2" onClick={() => handleFilter(term)}>
+      <h2 className="text-center">Filters</h2>
+      <div className="filter-buttons text-center">
+        {classTerms.map((term) => (
+          <button key={term} className="btn btn-outline-primary m-2" onClick={() => handleFilter(term)}>
             {term}
           </button>
         ))}
+      </div>
+
+      <div className="filter-buttons text-center">
+        {typeTerms.map((term) => (
+          <button key={term} className="btn btn-outline-primary m-2" onClick={() => handleFilter(term)}>
+            {term}
+          </button>
+        ))}
+
       </div>
 
       {/* Pagination Controls */}
