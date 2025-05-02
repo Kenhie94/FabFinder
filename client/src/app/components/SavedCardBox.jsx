@@ -6,7 +6,7 @@ export default function CardBox({ card, onDelete }) {
   const router = useRouter();
 
   const handleDelete = async () => {
-    try {
+  try {
       const res = await fetch("/api/cards", {
         method: "DELETE",
         credentials: "include",

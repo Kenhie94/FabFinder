@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import CardBox from "../components/PublicCardBox";
+import FilterSidebar from "../components/SidebarFilter";
 import "./style.css";
 
 export default function Homepage() {
@@ -172,85 +173,75 @@ export default function Homepage() {
   };
 
   return (
-    <div className="homepage">
-      <div className="header-section text-center">
-        {/* Conditionally render the logo */}
-        {!searchConducted && <img className="logoStyle" src="/FabFinder-Logo.png" alt="FabFinder Logo" />}
-        <form onSubmit={handleSearch} className="d-flex justify-content-center mt-3">
-          <div className="form-group">
-            <input
-              type="text"
-              className="input-style form-control"
-              name="searchEngine"
-              id="searchEngine"
-              placeholder="Search for Flesh and Blood cards"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <button type="submit" className="btn btn-danger ms-3 align-self-end">
-            Search
-          </button>
-        </form>
-        {searchConducted && noResultsMessage && !error && <p className="mt-3">😕 No cards found.</p>}
-      </div>
-
-      {/* Filter Buttons */}
-      <h2 className="text-center">Filters</h2>
-      <div className="filter-buttons text-center">
-        {classTerms.map((term) => (
-          <button key={term} className="btn btn-outline-primary m-2" onClick={() => handleFilter(term)}>
-            {term}
-          </button>
-        ))}
-      </div>
-
-      <div className="filter-buttons text-center">
-        {typeTerms.map((term) => (
-          <button key={term} className="btn btn-outline-primary m-2" onClick={() => handleFilter(term)}>
-            {term}
-          </button>
-        ))}
-
-      </div>
-
-      {/* Pagination Controls */}
-      {searchResults.length > cardsPerPage && (
-        <div className="pagination-controls text-center mt-4">
-          <button className="btn btn-secondary mx-2" onClick={handlePreviousPage} disabled={currentPage === 1}>
-            Previous
-          </button>
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
-          <button className="btn btn-secondary mx-2" onClick={handleNextPage} disabled={currentPage === totalPages}>
-            Next
-          </button>
+    <div className="container-fluid homepage">
+      <div className="row">
+        {/* Sidebar Filter */}
+        <div className="col-md-3 col-lg-2 sidebar-filter">
+          <FilterSidebar classTerms={classTerms} typeTerms={typeTerms} onFilter={handleFilter} />
         </div>
-      )}
 
-      <div className="cards-section mt-5">
-        <ul className="cards-container d-flex flex-wrap justify-content-center p-0">
-          {currentCards.map((card) => (
-            <CardBox key={card.unique_id} card={card} onSave={handleSave} />
-          ))}
-        </ul>
+        {/* Main Content */}
+        <div className="col-md-9 col-lg-10">
+          <div className="header-section text-center">
+            {!searchConducted && <img className="logoStyle" src="/FabFinder-Logo.png" alt="FabFinder Logo" />}
+            <form onSubmit={handleSearch} className="d-flex justify-content-center mt-3">
+              <div className="form-group">
+                <input
+                  type="text"
+                  className="input-style form-control"
+                  name="searchEngine"
+                  id="searchEngine"
+                  placeholder="Search for Flesh and Blood cards"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="btn btn-danger ms-3 align-self-end">
+                Search
+              </button>
+            </form>
+            {searchConducted && noResultsMessage && !error && <p className="mt-3">😕 No cards found.</p>}
+          </div>
 
-        {/* Modal */}
-        {selectedCard && (
-          <div className="modal-overlay" onClick={closeModal}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              {selectedCard.printings.length >= 3 ? (
-                <img src={selectedCard.printings[selectedCard.printings.length - 3].image_url} alt={selectedCard.name} style={{ width: "100%", height: "auto" }} />
-              ) : (
-                <img src={selectedCard.printings[0].image_url} alt={selectedCard.name} style={{ width: "100%", height: "auto" }} />
-              )}
-              <button className="close-button" onClick={() => router.push(`/cards/${selectedCard.unique_id}`)}>
-                See card detail
+          {/* Pagination Controls */}
+          {searchResults.length > cardsPerPage && (
+            <div className="pagination-controls text-center mt-4">
+              <button className="btn btn-secondary mx-2" onClick={handlePreviousPage} disabled={currentPage === 1}>
+                Previous
+              </button>
+              <span>
+                Page {currentPage} of {totalPages}
+              </span>
+              <button className="btn btn-secondary mx-2" onClick={handleNextPage} disabled={currentPage === totalPages}>
+                Next
               </button>
             </div>
+          )}
+
+          <div className="cards-section mt-5">
+            <ul className="cards-container d-flex flex-wrap justify-content-center p-0">
+              {currentCards.map((card) => (
+                <CardBox key={card.unique_id} card={card} onSave={handleSave} />
+              ))}
+            </ul>
+
+            {/* Modal */}
+            {selectedCard && (
+              <div className="modal-overlay" onClick={closeModal}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  {selectedCard.printings.length >= 3 ? (
+                    <img src={selectedCard.printings[selectedCard.printings.length - 3].image_url} alt={selectedCard.name} style={{ width: "100%", height: "auto" }} />
+                  ) : (
+                    <img src={selectedCard.printings[0].image_url} alt={selectedCard.name} style={{ width: "100%", height: "auto" }} />
+                  )}
+                  <button className="close-button" onClick={() => router.push(`/cards/${selectedCard.unique_id}`)}>
+                    See card detail
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
