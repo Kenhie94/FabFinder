@@ -5,12 +5,11 @@ import { useRouter } from "next/navigation";
 
 export default function PublicCardBox({ card, onSave }) {
   const [hovered, setHovered] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0); // Track selected variation
   const router = useRouter();
 
-  const imageUrl =
-    card.printings.length >= 3
-      ? card.printings[card.printings.length - 3].image_url
-      : card.printings[0]?.image_url || "";
+  const printings = card.printings || [];
+  const activeImage = printings[activeIndex]?.image_url || "";
 
   return (
     <li
@@ -20,11 +19,30 @@ export default function PublicCardBox({ card, onSave }) {
       style={{ cursor: "pointer", maxWidth: "300px", margin: "10px" }}
     >
       <img
-        src={imageUrl}
+        src={activeImage}
         alt={card.name}
         style={{ width: "100%", borderRadius: "1px" }}
       />
 
+      {/* Print variation selector */}
+      {printings.length > 1 && (
+        <div className="d-flex justify-content-center mt-2 gap-2">
+          {printings.map((_, idx) => (
+            <button
+              key={idx}
+              className={`btn btn-sm ${idx === activeIndex ? "btn-primary" : "btn-outline-secondary"}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveIndex(idx);
+              }}
+            >
+              {`P${idx + 1}`}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Hover Buttons */}
       {hovered && (
         <div className="hover-buttons d-flex flex-row position-absolute top-50 start-50 translate-middle text-center">
           <button

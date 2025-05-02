@@ -12,11 +12,11 @@ export default function Footer() {
         <a href="https://www.linkedin.com/in/kenjyjap/">
           <img src="/favicon/linkedin.png" alt="LinkedIn Icon" className="faviconLinks m-3"/>
         </a>
-        <p className="fw-normal fs-5">
+        <p>
           FabFinder is not affiliated with <a href="https://legendstory.com/">Legend Story Studios</a>®. <a href="https://fabtcg.com/en/">Flesh and Blood</a>™ is a registered trademark of Legend Story Studios. All related images and content are copyright © Legend Story
           Studios. All rights reserved.
         </p>
-        <p className="fw-normal fs-5">© 2025 FabFinder. All rights reserved.</p>
+        <p>© 2025 FabFinder. All rights reserved.</p>
       </div>
     </footer>
   );
