@@ -8,9 +8,9 @@ export default function FilterSidebar({ classTerms, typeTerms, onFilter }) {
       <h5>Filter by Class</h5>
       <ul className="list-unstyled">
         {classTerms.map((term) => (
-          <li key={term} className="mb-2">
-            <button className="btn btn-link p-0 text-start" onClick={() => onFilter(term)}>
-              • {term}
+          <li key={term}>
+            <button className="btn btn-link p-0 text-start text-decoration-none text-black" onClick={() => onFilter(term)}>
+              {term}
             </button>
           </li>
         ))}
@@ -18,9 +18,9 @@ export default function FilterSidebar({ classTerms, typeTerms, onFilter }) {
       <h5 className="mt-4">Filter by Type</h5>
       <ul className="list-unstyled">
         {typeTerms.map((term) => (
-          <li key={term} className="mb-2">
-            <button className="btn btn-link p-0 text-start" onClick={() => onFilter(term)}>
-              • {term}
+          <li key={term}>
+            <button className="btn btn-link p-0 text-start text-decoration-none text-black" onClick={() => onFilter(term)}>
+              {term}
             </button>
           </li>
         ))}
