@@ -26,16 +26,16 @@ export default function Homepage() {
     setSelectedCard(null);
   };
 
-  function groupCardsByName(cards) {
+  function groupCardsByNameAsArray(cards) {
     const grouped = {};
     cards.forEach((card) => {
       if (!grouped[card.name]) {
-        grouped[card.name] = { ...card, printings: [...card.printings] };
+        grouped[card.name] = [card];
       } else {
-        grouped[card.name].printings.push(...card.printings);
+        grouped[card.name].push(card);
       }
     });
-    return Object.values(grouped);
+    return Object.values(grouped); // Each item is now an array of pitch variants
   }
 
   const handleSearch = async (e) => {
@@ -49,11 +49,10 @@ export default function Homepage() {
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
       const data = await response.json();
 
-      const filteredCards = data.filter((card) =>
-        card.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      const filteredCards = data.filter((card) => card.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
-      const groupedCards = groupCardsByName(filteredCards);
+      const groupedCards = groupCardsByNameAsArray(filteredCards);
+
       setSearchResults(groupedCards);
       setCurrentPage(1);
       if (groupedCards.length === 0) setNoResultsMessage(true);
@@ -73,7 +72,8 @@ export default function Homepage() {
       const data = await response.json();
 
       const filteredCards = data.filter((card) => card.types.includes(type));
-      const groupedCards = groupCardsByName(filteredCards);
+      const groupedCards = groupCardsByNameAsArray(filteredCards);
+
       setSearchResults(groupedCards);
       setCurrentPage(1);
       if (groupedCards.length === 0) setNoResultsMessage(true);
@@ -122,9 +122,22 @@ export default function Homepage() {
   }, [noResultsMessage]);
 
   const classTerms = [
-    "Assassin", "Bard", "Brute", "Generic", "Guardian", "Illusionist",
-    "Mechanologist", "Merchant", "Necromancer", "Ninja", "Pirate",
-    "Ranger", "Runeblade", "Shapeshifter", "Warrior", "Wizard"
+    "Assassin",
+    "Bard",
+    "Brute",
+    "Generic",
+    "Guardian",
+    "Illusionist",
+    "Mechanologist",
+    "Merchant",
+    "Necromancer",
+    "Ninja",
+    "Pirate",
+    "Ranger",
+    "Runeblade",
+    "Shapeshifter",
+    "Warrior",
+    "Wizard",
   ];
 
   const typeTerms = ["Chaos", "Draconic", "Earth", "Elemental", "Ice", "Light", "Lightning", "Royal", "Shadow"];
@@ -163,23 +176,31 @@ export default function Homepage() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <button type="submit" className="btn btn-danger ms-3 align-self-end">Search</button>
+              <button type="submit" className="btn btn-danger ms-3 align-self-end">
+                Search
+              </button>
             </form>
             {searchConducted && noResultsMessage && !error && <p className="mt-3">😕 No cards found.</p>}
           </div>
 
           {searchResults.length > cardsPerPage && (
             <div className="pagination-controls text-center mt-4">
-              <button className="btn btn-secondary mx-2" onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</button>
-              <span>Page {currentPage} of {totalPages}</span>
-              <button className="btn btn-secondary mx-2" onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
+              <button className="btn btn-secondary mx-2" onClick={handlePreviousPage} disabled={currentPage === 1}>
+                Previous
+              </button>
+              <span>
+                Page {currentPage} of {totalPages}
+              </span>
+              <button className="btn btn-secondary mx-2" onClick={handleNextPage} disabled={currentPage === totalPages}>
+                Next
+              </button>
             </div>
           )}
 
           <div className="cards-section mt-5">
             <ul className="cards-container d-flex flex-wrap justify-content-center p-0">
-              {currentCards.map((card) => (
-                <CardBox key={card.unique_id} card={card} onSave={handleSave} />
+              {currentCards.map((cardGroup, index) => (
+                <CardBox key={cardGroup[0].unique_id} cards={cardGroup} onSave={handleSave} />
               ))}
             </ul>
 
@@ -187,7 +208,9 @@ export default function Homepage() {
               <div className="modal-overlay" onClick={closeModal}>
                 <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                   <img src={selectedCard.printings[0].image_url} alt={selectedCard.name} style={{ width: "100%", height: "auto" }} />
-                  <button className="close-button" onClick={() => router.push(`/cards/${selectedCard.unique_id}`)}>See card detail</button>
+                  <button className="close-button" onClick={() => router.push(`/cards/${selectedCard.unique_id}`)}>
+                    See card detail
+                  </button>
                 </div>
               </div>
             )}
